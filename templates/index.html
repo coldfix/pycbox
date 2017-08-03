@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+  {{- super() }}
+
+{% block nav -%}
+<a href="{{ link('.', 'gallery')|e }}">Go to Gallery</a> |
+<a href="{{ link('.', 'index')|e }}">Reload</a>
+{%- endblock nav %}
+
+<h1>{{ heading|e }}</h1>
+
+{% block pictures -%}
+<h2>Pictures</h2>
+<table class="filelist">
+{%- for file in files|sort(attribute='time') if file.is_image %}
+ <tr class="file">
+  <td class="size">{{ file.filesize() }}</td>
+  <td class="unit">{{ file.filesize_unit() }}</td>
+  <td class="action">
+    <a title="download image" href="{{ link(file.name, 'download')|e }}"><img src="{{ static('save.png')|e }}" width="16" height="16" alt="save"/></a>
+  </td>
+  <td class="name">
+    <a title="view image" href="{{ link(file.name, 'view')|e }}">{{ file.name|e }}</a>
+  </td>
+ </tr>
+{%- endfor %}
+</table>
+{%- endblock pictures %}
+
+{% block code -%}
+<h2>Code</h2>
+<table class="filelist">
+{%- for file in files|sort(attribute='time') if file.is_code %}
+ <tr class="file">
+  <td class="size">{{ file.filesize() }}</td>
+  <td class="unit">{{ file.filesize_unit() }}</td>
+  <td class="action">
+    <a title="highlight file" href="{{ link(file.name, 'highlight')|e }}"><img src="{{ static('highlight.png')|e }}" width="16" height="16" alt="source"/></a>
+    <a title="view file" href="{{ link(file.name, 'view')|e }}"><img src="{{ static('view.png')|e }}" width="16" height="16" alt="view"/></a>
+  </td>
+  <td class="name">
+    <a title="download file" href="{{ link(file.name, 'download')|e }}">{{ file.name|e }}</a>
+  </td>
+ </tr>
+{%- endfor %}
+</table>
+{%- endblock code %}
+
+{% block other -%}
+<h2>Other files</h2>
+<table class="filelist">
+{%- for file in files|sort(attribute='time') if file.is_other %}
+ <tr class="file">
+  <td class="size">{{ file.filesize() }}</td>
+  <td class="unit">{{ file.filesize_unit() }}</td>
+  <td class="action">
+    <a title="view file" href="{{ link(file.name, 'view')|e }}"><img src="{{ static('view.png')|e }}" width="16" height="16" alt="view"/></a>
+  </td>
+  <td class="name">
+    <a title="download file" href="{{ link(file.name, 'download')|e }}">{{ file.name|e }}</a>
+  </td>
+ </tr>
+{%- endfor %}
+</table>
+{%- endblock other %}
+
+{% block folders -%}
+<h2>Folders</h2>
+<table class="filelist">
+{%- for file in files if file.is_dir %}
+ <tr class="file">
+  <td class="size">{{ file.size }}</td>
+  <td class="unit">Items</td>
+  <td class="action">
+    <a title="browse folder" href="{{ link(file.name, active)|e }}"><img src="{{ static('folder.png') }}" width="16" height="16" alt="browse"/></a>
+  </td>
+  <td class="name">
+    <a title="browse folder" href="{{ link(file.name, active)|e }}">{{ file.name|e }}/</a>
+  </td>
+ </tr>
+{%- endfor %}
+</table>
+{%- endblock folders %}
+
+{%- if can_upload %}
+
+<h1>Upload</h1>
+<form action="{{ link('.', 'upload')|e }}" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+<table>
+ <tr>
+  <td><input type="hidden" name="referer" value="{{ active }}"/>File:</td>
+  <td><input type="file" name="file" size="40"/></td>
+  <td><input type="submit"/></td>
+ </tr>
+</table>
+</form>
+
+{% else %}
+
+<div class="gray">
+<h1>Upload</h1>
+Write protected directory.
+</div>
+
+{% endif %}
+
+{%- endblock content %}

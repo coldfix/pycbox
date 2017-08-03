@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+{% block nav -%}
+<a href="{{ link('.', 'index')|e }}">Go to Index</a> |
+<a href="{{ link('.', 'gallery')|e }}">Reload</a>
+{%- endblock nav %}
+
+{% block pictures %}
+<h2>Pictures</h2>
+{% for file in files if file.is_image %}
+<div class="imagebox" style="width: {{ file.thumb_width }}px; height: {{ file.thumb_height
+}}px;">
+ <a href="{{ link(file.name, 'view')|e }}">
+   <img width="{{ file.thumb_width }}"
+        height="{{ file.thumb_height }}"
+        src="{{ link(file.name, 'thumb')|e }}"
+        alt="{{ file.name|e }}"/>
+ </a>
+</div>
+{% endfor %}
+{% endblock pictures %}

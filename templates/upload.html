@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content -%}
+
+upload complete: {{ path|e }}/{{ name|e }}<br/>
+<a href="{{ referer|e }}">Return now</a>
+
+{%- endblock content %}

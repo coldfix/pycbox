@@ -1,0 +1,83 @@
+
+body {
+  /*--------------------------------------------------
+   * font-family: sans-serif;
+   *--------------------------------------------------*/
+}
+
+h1 {
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.5em;
+  margin: 1em 0em 0.4em;
+}
+
+
+h2 {
+  text-align: left;
+  font-weight: bold;
+  font-size: 1em;
+
+  margin: 1em 0em 0.4em;
+  padding: 0em;
+}
+
+a {
+  text-decoration: none;
+  font-weight: bold;
+}
+a:hover {
+  color: pink;
+}
+
+.gray {
+  color: gray;
+}
+
+.imagebox {
+  display: inline-block;
+  margin: 4px;
+  border: 1px dashed gray;
+  text-align: center;
+}
+.imagebox:hover {
+  border: 1px solid red;
+}
+
+table {
+  border: none;
+  border-spacing: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.filelist .file:nth-child(2n+2) {
+  background-color: #f0f0f0;
+}
+.filelist .file:hover {
+  background-color: #ccffcc;
+}
+
+.filelist .file .size {
+  text-align: right;
+  min-width: 5em;
+  padding-right: 0.3em;
+}
+.filelist .file .unit {
+  text-align: left;
+  min-width: 3.0em;
+  padding-right: 0.3em;
+}
+.filelist .file .action {
+  text-align: right;
+  padding-right: 0.3em;
+}
+
+.filelist .file .name {
+  min-width: 30em;
+}
+
+img {
+  border: none;
+}
+
