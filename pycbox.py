@@ -43,6 +43,8 @@ def directory_listing(active, path):
         return abort(401)
     path = normpath(path)
     full = os.path.join(FILES, path)
+    if not os.path.exists(full):
+        return abort(404)
     names = ['.'] + (path and ['..'] or []) + os.listdir(full)
     files = [File(path, name) for name in names if not hidden(name)]
     return render_template(active + '.html', **{
@@ -99,9 +101,12 @@ def upload(path):
     if not check_path(path):
         return abort(401)
     path = normpath(path)
+    full = os.path.join(FILES, path)
+    if not os.path.exists(full):
+        return abort(404)
     file = request.files['file']
     name = secure_filename(file.filename)   # FIXME: secure_filename maybe too much?
-    dest = os.path.join(FILES, path, name)
+    dest = os.path.join(full, name)
     file.save(dest)
     return render_template('upload.html', **{
         'path': path,
