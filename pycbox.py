@@ -3,6 +3,7 @@ import subprocess
 from stat import S_ISDIR
 from functools import partial
 from email.utils import formatdate # RFC 2822
+from distutils.spawn import find_executable
 
 from flask import (Flask, request, abort, send_from_directory,
                    render_template, url_for)
@@ -206,16 +207,23 @@ def create_thumb(path):
 
 # source highlights
 
+def source_highlight():
+    if find_executable('source-highlight'):
+        return ['source-highlight']
+    if find_executable('highlight'):
+        return ['highlight', '--inline-css']
+
+
 def create_highlight(path):
+    tool = source_highlight()
     orig = os.path.join(FILES, path)
     dest = os.path.join(HILITE, path) + '.html'
     if not os.path.exists(dest) or newer_than(orig, dest):
         os.makedirs(os.path.dirname(dest), exist_ok=True)
-        return 0 == subprocess.call([
-            'source-highlight',
+        return tool and 0 == subprocess.call(tool + [
             '-i', orig, '-o', dest,
             '-T', os.path.basename(orig),
-            '-f', 'html', '-d', '-q'
+            '--out-format', 'html', '--doc', '-q',
         ])
     return os.path.exists(dest)
 
