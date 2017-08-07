@@ -14,7 +14,8 @@
    <img width="{{ file.thumb_width }}"
         height="{{ file.thumb_height }}"
         src="{{ link(file.name, 'thumb')|e }}"
-        alt="{{ file.name|e }}"/>
+        alt="{{ file.name|e }}"
+        title="{{ file.name|e }}"/>
  </a>
 </div>
 {% endfor %}
