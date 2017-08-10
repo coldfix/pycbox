@@ -9,3 +9,5 @@ services:
       - ./files:/pycbox/files
     ports:
       - "5000:5000"
+    cap_drop:
+      - all
