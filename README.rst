@@ -23,11 +23,8 @@ To quickly install dependencies and check out the application, simply type:
     # install dependencies
     pip install -r requirements.txt --user
 
-    # link folder with served files
-    ln -s $HOME/Pictures files
-
-    # start the application
-    python pycbox.py
+    # serve '~/Pictures' directory
+    python pycbox.py -w ~/Pictures
 
 However, running the pycbox from the command line like this is not recommended
 for deployment! From the `flask documentation`_:

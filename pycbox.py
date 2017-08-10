@@ -3,9 +3,10 @@
 Simple web interface for directory listings and picture gallery.
 
 Usage:
-    ./pycbox.py [-h HOST] [-p PORT] [--debug]
+    ./pycbox.py [-w WEBROOT] [-h HOST] [-p PORT] [--debug]
 
 Options:
+    -w PATH, --webroot PATH     Serve files from this directory.
     -h HOST, --host HOST        Interface to listen on [default: 127.0.0.1]
     -p PORT, --port PORT        Port to listen on [default: 5000]
     --debug                     Turn on debug mode. NEVER use this in production!
@@ -271,7 +272,13 @@ def create_highlight(path):
     return os.path.exists(dest)
 
 
-if __name__ == '__main__':
+def main(args=None):
+    global FILES
     from docopt import docopt
-    opts = docopt(__doc__)
+    opts = docopt(__doc__, args)
+    FILES = os.path.abspath(opts['--webroot'] or FILES)
     app.run(opts['--host'], opts['--port'], debug=opts['--debug'])
+
+
+if __name__ == '__main__':
+    import sys; sys.exit(main(sys.argv[1:]))
