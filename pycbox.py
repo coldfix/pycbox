@@ -246,4 +246,5 @@ def create_highlight(path):
 
 
 if __name__ == '__main__':
-    app.run('127.0.0.1', 5000, debug=True)
+    debug = os.environ.get('FLASK_DEBUG') == '1'
+    app.run('127.0.0.1', 5000, debug=debug)
