@@ -13,5 +13,6 @@ setup(
     install_requires=[
         'flask',
         'Pillow',
+        'PyYAML',
     ],
 )

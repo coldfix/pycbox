@@ -12,6 +12,17 @@ This repo is a python rewrite of the picbox_ php app.
 .. _pix.coldfix.eu: https://pix.coldfix.eu
 .. _picbox: https://github.com/coldfix/picbox
 
+Config
+------
+
+If it exists, ``config.yml`` will be loaded from the active directory. The
+config file may become mandatory, so you should always copy and adjust the
+shipped example config:
+
+.. code-block:: bash
+
+    cp config.example.yml config.yml
+
 Deployment
 ----------
 

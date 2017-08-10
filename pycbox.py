@@ -5,19 +5,31 @@ from functools import partial
 from email.utils import formatdate # RFC 2822
 from distutils.spawn import find_executable
 
+import yaml
 from flask import (Flask, request, abort, send_from_directory,
                    render_template, url_for)
 from werkzeug.utils import secure_filename
 from PIL import Image
 
 
-ROOT = os.path.dirname(__file__)
-FILES = os.path.join(ROOT, 'files')
-THUMBS = os.path.join(ROOT, 'thumbs')
-HILITE = os.path.join(ROOT, 'hilite')
-THUMB_WIDTH = 450
-THUMB_HEIGHT = 150
-IMAGE_EXTS = ('.jpg', '.jpeg', '.png', '.bmp', '.gif')
+try:
+    with open('config.yml') as f:
+        cfg = yaml.safe_load(f)
+except (FileNotFoundError, IOError):
+    cfg = {}
+
+ROOT         = os.path.dirname(__file__)
+FILES        = cfg.get('files', os.path.join(ROOT, 'files'))
+THUMBS       = cfg.get('thumbs', os.path.join(ROOT, 'thumbs'))
+HILITE       = cfg.get('hilite', os.path.join(ROOT, 'hilite'))
+THUMB_WIDTH  = cfg.get('thumb_width', 450)
+THUMB_HEIGHT = cfg.get('thumb_height', 150)
+IMAGE_EXTS   = cfg.get('image_exts', ('.jpg', '.jpeg', '.png', '.bmp', '.gif'))
+
+FILES = os.path.abspath(FILES)
+THUMBS = os.path.abspath(THUMBS)
+HILITE = os.path.abspath(HILITE)
+
 
 app = Flask(__name__)
 

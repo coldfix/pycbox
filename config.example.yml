@@ -1,0 +1,12 @@
+# Webroot:
+files: ./files
+
+# thumbnail settings:
+thumb_width: 450
+thumb_height: 150
+image_exts: ['.jpg', '.jpeg', '.png', '.bmp', '.gif']
+
+# Cache location for internal files:
+# (might go away in favor of redis)
+thumbs: ./thumbs
+hilite: ./hilite
