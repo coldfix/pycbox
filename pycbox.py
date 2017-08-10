@@ -90,6 +90,7 @@ def directory_listing(active, path):
         return abort(404)
     names = ['.'] + (path and ['..'] or []) + os.listdir(full)
     files = [File(path, name) for name in names if not hidden(name)]
+    files = [f for f in files if f.accessible]
     return render_template(active + '.html', **{
         'active': active,
         'files': files,
@@ -110,7 +111,7 @@ def thumb(path):
     if not os.path.exists(full):
         return abort(404)
     file = File(*os.path.split(path))
-    if not file.is_image:
+    if not file.is_image or not file.accessible:
         return abort(404)
     create_thumb(path)
     return send_from_directory(cfg.THUMBS, path, as_attachment=False)
@@ -191,6 +192,9 @@ class File:
         self.size = self.stat.st_size
         self.time = self.stat.st_mtime
         self.is_dir = S_ISDIR(self.mode)
+        self.accessible = os.access(self.full, os.R_OK | (self.is_dir and os.X_OK))
+        if not self.accessible:     # prevent exception below by returning
+            return                  # immediately
         self.is_image = not self.is_dir and is_image(self.full)
         self.is_code = not self.is_dir and not self.is_image and create_highlight(self.path)
         self.is_other = not any((self.is_dir, self.is_image, self.is_code))
