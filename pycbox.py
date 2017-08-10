@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# encoding: utf-8
 """
 Simple web interface for directory listings and picture gallery.
 
@@ -26,6 +27,7 @@ A more sophisticated server can e.g. be run using twisted:
 """
 
 import os
+import errno
 import subprocess
 from stat import S_ISDIR
 from functools import partial
@@ -242,7 +244,7 @@ def create_thumb(path):
     orig = os.path.join(FILES, path)
     dest = os.path.join(THUMBS, path)
     if not os.path.exists(dest) or newer_than(orig, dest):
-        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        mkdir_p(os.path.dirname(dest))
         image = Image.open(orig)
         image.thumbnail(_thumb_size(*image.size))
         image.save(dest)
@@ -262,13 +264,23 @@ def create_highlight(path):
     orig = os.path.join(FILES, path)
     dest = os.path.join(HILITE, path) + '.html'
     if not os.path.exists(dest) or newer_than(orig, dest):
-        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        mkdir_p(os.path.dirname(dest))
         return tool and 0 == subprocess.call(tool + [
             '-i', orig, '-o', dest,
             '-T', os.path.basename(orig),
             '--out-format', 'html', '--doc', '-q',
         ])
     return os.path.exists(dest)
+
+
+# py2 compatibility
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if e.errno != errno.EEXIST or not os.path.isdir(path):
+            raise
 
 
 def main(args=None):
