@@ -157,4 +157,6 @@ Big TODOs
 ---------
 
 - use redis for caching thumbs and highlighted files
-- configure via YAML file: auth, quota, uploads, path
+- use asciidoc for markdown
+- use pygments for highlighting
+- configure via YAML file: auth, quota, uploads, deny globs
