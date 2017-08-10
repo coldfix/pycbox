@@ -12,6 +12,42 @@ This repo is a python rewrite of the picbox_ php app.
 .. _pix.coldfix.eu: https://pix.coldfix.eu
 .. _picbox: https://github.com/coldfix/picbox
 
+
+Usage
+-----
+
+To quickly install dependencies and check out the application, simply type:
+
+.. code-block:: bash
+
+    # install dependencies
+    pip install -r requirements.txt --user
+
+    # link folder with served files
+    ln -s $HOME/Pictures files
+
+    # start the application
+    python pycbox.py
+
+However, running the pycbox from the command line like this is not recommended
+for deployment! From the `flask documentation`_:
+
+    While lightweight and easy to use, Flask’s built-in server is not suitable
+    for production as it doesn’t scale well and by default serves only one
+    request at a time. Some of the options available for properly running
+    Flask in production are documented here.
+
+.. _flask documentation: http://flask.pocoo.org/docs/latest/deploying/
+
+A more sophisticated server can e.g. be run using twisted:
+
+.. code-block:: bash
+
+    twistd --nodaemon --logfile=- web --port=tcp:5000 --wsgi=pycbox.app
+
+In fact, the recommended method is using docker, see Deployment_.
+
+
 Config
 ------
 
@@ -23,27 +59,37 @@ shipped example config:
 
     cp config.example.yml config.yml
 
-An alternate config file name and path can be specified via the
-``PYCBOX_CONFIG`` environment variable.
+An alternate config file name or path can be specified via the
+``PYCBOX_CONFIG`` environment variable, i.e. like this:
+
+.. code-block:: bash
+
+   PYCBOX_CONFIG=/path/to/alt_config.yml python pycbox.py 
+   PYCBOX_CONFIG=/path/to/alt_config.yml twistd web --wsgi=pycbox.app
+
 
 Deployment
 ----------
 
-The recommended method will be to run the application via docker. A suitable
-dockerfile will soon be added.
-
-Debug mode
-----------
-
-**DO NOT DO THIS IN PRODUCTION** since it allows the client to execute
-arbitrary code.
-
-To run the application in debug mode on port 5000:
+The recommended method is to run pycbox is via docker. The image can be built
+and run as follows:
 
 .. code-block:: bash
 
-    python setup.py develop
-    FLASK_APP=pycbox.py FLASK_DEBUG=1 flask run
+    docker build . -t pycbox
+    docker run --cap-drop=all \
+        -v `pwd`/files:/pycbox/files \
+        -p 5000:5000 \
+        --name=pycbox pycbox
+
+or simply:
+
+.. code-block:: bash
+
+    docker-compose up
+
+Add ``-d`` to either command line to run in the background.
+
 
 Proxy
 -----
@@ -57,6 +103,11 @@ subdomain:
     server {
         listen      80;
         listen [::]:80;
+        server_name pix.example.com pix.example.org;
+        return 301 https://$host$request_uri;
+    }
+
+    server {
         listen      443 ssl;
         listen [::]:443 ssl;
         server_name pix.example.com pix.example.org;
@@ -71,6 +122,7 @@ subdomain:
         }
     }
 
+
 Upload
 ------
 
@@ -82,9 +134,30 @@ To enable uploading to a particular subfolder, make it writable by all:
     chmod 777 files/public
 
 
-Big TODOs
-~~~~~~~~~
+Debug mode
+----------
 
-- dockerfile
+**DO NOT DO THIS IN PRODUCTION** since it allows the client to execute
+arbitrary code.
+
+To run the application in debug mode on port 5000, type either:
+
+.. code-block:: bash
+
+    python pycbox.py --debug
+
+or (recommended):
+
+.. code-block:: bash
+
+    FLASK_APP=pycbox.py FLASK_DEBUG=1 flask run
+
+The second command takes care of reloading the server when the python module
+is changed and is therefore recommended for development.
+
+
+Big TODOs
+---------
+
 - use redis for caching thumbs and highlighted files
 - configure via YAML file: auth, quota, uploads, path
