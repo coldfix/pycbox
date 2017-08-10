@@ -57,7 +57,15 @@ cfg = Config({
     'FRONTPAGE':    'index',
 })
 
-app = Flask(__name__)
+
+def data_filename(name):
+    if os.path.isdir(os.path.join(ROOT, name)):
+        return os.path.join(ROOT, name)
+
+
+TEMPLATES = os.path.join(ROOT, 'templates')
+STATIC = os.path.join(ROOT, 'static')
+app = Flask(__name__, template_folder=TEMPLATES, static_folder=STATIC)
 
 
 def content_url(path, filename, action):

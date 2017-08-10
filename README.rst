@@ -16,14 +16,20 @@ This repo is a python rewrite of the picbox_ php app.
 Usage
 -----
 
-To quickly install dependencies and check out the application, simply type:
+You can quickly install the latest release and serve files from your
+``~/Pictures`` directory as follows (ignore the deprecation warning):
 
 .. code-block:: bash
 
-    # install dependencies
-    pip install -r requirements.txt --user
+    pip install pycbox --user --egg
+    python -m pycbox -w ~/Pictures
 
-    # serve '~/Pictures' directory
+Alternatively, you can run pycbox without installation from the git checkout.
+Though in this case, you still need to install the dependencies as follows:
+
+.. code-block:: bash
+
+    pip install -r requirements.txt --user
     python pycbox.py -w ~/Pictures
 
 However, running the pycbox from the command line like this is not recommended

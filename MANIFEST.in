@@ -1,0 +1,4 @@
+graft static
+graft templates
+include README.rst CHANGES.rst
+include config.example.yml
