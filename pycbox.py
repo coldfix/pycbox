@@ -4,10 +4,11 @@
 Simple web interface for directory listings and picture gallery.
 
 Usage:
-    ./pycbox.py [-w WEBROOT] [-h HOST] [-p PORT] [--debug]
+    ./pycbox.py [-w WEBROOT] [-c CONFIG] [-h HOST] [-p PORT] [--debug]
 
 Options:
     -w PATH, --webroot PATH     Serve files from this directory.
+    -c PATH, --config PATH      Config file name
     -h HOST, --host HOST        Interface to listen on [default: 127.0.0.1]
     -p PORT, --port PORT        Port to listen on [default: 5000]
     --debug                     Turn on debug mode. NEVER use this in production!
@@ -40,25 +41,21 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 
 
-try:
-    with open(os.environ.get('PYCBOX_CONFIG', 'config.yml')) as f:
-        cfg = yaml.safe_load(f)
-except (FileNotFoundError, IOError):
-    cfg = {}
+class Config(dict):
+    def __getattr__(self, key):
+        return self[key]
 
-ROOT         = os.path.dirname(__file__)
-FILES        = cfg.get('files', os.path.join(ROOT, 'files'))
-THUMBS       = cfg.get('thumbs', os.path.join(ROOT, 'thumbs'))
-HILITE       = cfg.get('hilite', os.path.join(ROOT, 'hilite'))
-THUMB_WIDTH  = cfg.get('thumb_width', 450)
-THUMB_HEIGHT = cfg.get('thumb_height', 150)
-IMAGE_EXTS   = cfg.get('image_exts', ('.jpg', '.jpeg', '.png', '.bmp', '.gif'))
-FRONTPAGE    = cfg.get('frontpage', 'index')
 
-FILES = os.path.abspath(FILES)
-THUMBS = os.path.abspath(THUMBS)
-HILITE = os.path.abspath(HILITE)
-
+ROOT = os.path.dirname(__file__)
+cfg = Config({
+    'FILES':        os.path.join(ROOT, 'files'),
+    'THUMBS':       os.path.join(ROOT, 'thumbs'),
+    'HILITE':       os.path.join(ROOT, 'hilite'),
+    'THUMB_WIDTH':  450,
+    'THUMB_HEIGHT': 150,
+    'IMAGE_EXTS':   ('.jpg', '.jpeg', '.png', '.bmp', '.gif'),
+    'FRONTPAGE':    'index',
+})
 
 app = Flask(__name__)
 
@@ -69,7 +66,7 @@ def content_url(path, filename, action):
 
 @app.route('/')
 def frontpage():
-    return directory_listing(FRONTPAGE, '')
+    return directory_listing(cfg.FRONTPAGE, '')
 
 
 @app.route('/index/')
@@ -88,7 +85,7 @@ def directory_listing(active, path):
     if not check_path(path):
         return abort(401)
     path = normpath(path)
-    full = os.path.join(FILES, path)
+    full = os.path.join(cfg.FILES, path)
     if not os.path.exists(full):
         return abort(404)
     names = ['.'] + (path and ['..'] or []) + os.listdir(full)
@@ -109,28 +106,28 @@ def thumb(path):
     if not check_path(path):
         return abort(401)
     path = normpath(path)
-    full = os.path.join(FILES, path)
+    full = os.path.join(cfg.FILES, path)
     if not os.path.exists(full):
         return abort(404)
     file = File(*os.path.split(path))
     if not file.is_image:
         return abort(404)
     create_thumb(path)
-    return send_from_directory(THUMBS, path, as_attachment=False)
+    return send_from_directory(cfg.THUMBS, path, as_attachment=False)
 
 
 @app.route('/download/<path:path>')
 def download(path):
     if not check_path(path):
         return abort(401)
-    return send_from_directory(FILES, path, as_attachment=True)
+    return send_from_directory(cfg.FILES, path, as_attachment=True)
 
 
 @app.route('/view/<path:path>')
 def view(path):
     if not check_path(path):
         return abort(401)
-    return send_from_directory(FILES, path, as_attachment=False)
+    return send_from_directory(cfg.FILES, path, as_attachment=False)
 
 
 @app.route('/highlight/<path:path>')
@@ -139,7 +136,7 @@ def highlight(path):
         return abort(401)
     if not create_highlight(path):
         return abort(404)
-    return send_from_directory(HILITE, path+'.html', as_attachment=False)
+    return send_from_directory(cfg.HILITE, path+'.html', as_attachment=False)
 
 
 @app.route('/upload/<path:path>', methods=['POST'])
@@ -147,7 +144,7 @@ def upload(path):
     if not check_path(path):
         return abort(401)
     path = normpath(path)
-    full = os.path.join(FILES, path)
+    full = os.path.join(cfg.FILES, path)
     if not os.path.exists(full):
         return abort(404)
     file = request.files['file']
@@ -186,7 +183,7 @@ class File:
 
     def __init__(self, base, name):
         self.path = os.path.join(base, name)
-        self.full = os.path.join(FILES, self.path)
+        self.full = os.path.join(cfg.FILES, self.path)
         self.base = base
         self.name = name
         self.stat = os.stat(self.full)
@@ -222,7 +219,7 @@ def newer_than(a, b):
 # Images / thumbnails
 
 def is_image(path):
-    return os.path.splitext(path)[1].lower() in IMAGE_EXTS
+    return os.path.splitext(path)[1].lower() in cfg.IMAGE_EXTS
 
 
 def thumb_size(path):
@@ -230,9 +227,9 @@ def thumb_size(path):
     return _thumb_size(*image.size)
 
 
-def _thumb_size(image_width, image_height,
-                thumb_width=THUMB_WIDTH,
-                thumb_height=THUMB_HEIGHT):
+def _thumb_size(image_width, image_height, thumb_width=None, thumb_height=None):
+    thumb_width = thumb_width or cfg.THUMB_WIDTH
+    thumb_height = thumb_height or cfg.THUMB_HEIGHT
     if image_width / image_height > thumb_width / thumb_height:
         thumb_height = thumb_width * image_height // image_width
     elif image_width / image_height < thumb_width / thumb_height:
@@ -241,8 +238,8 @@ def _thumb_size(image_width, image_height,
 
 
 def create_thumb(path):
-    orig = os.path.join(FILES, path)
-    dest = os.path.join(THUMBS, path)
+    orig = os.path.join(cfg.FILES, path)
+    dest = os.path.join(cfg.THUMBS, path)
     if not os.path.exists(dest) or newer_than(orig, dest):
         mkdir_p(os.path.dirname(dest))
         image = Image.open(orig)
@@ -261,8 +258,8 @@ def source_highlight():
 
 def create_highlight(path):
     tool = source_highlight()
-    orig = os.path.join(FILES, path)
-    dest = os.path.join(HILITE, path) + '.html'
+    orig = os.path.join(cfg.FILES, path)
+    dest = os.path.join(cfg.HILITE, path) + '.html'
     if not os.path.exists(dest) or newer_than(orig, dest):
         mkdir_p(os.path.dirname(dest))
         return tool and 0 == subprocess.call(tool + [
@@ -283,13 +280,34 @@ def mkdir_p(path):
             raise
 
 
+def load_config(filename):
+    try:
+        with open(filename) as f:
+            conf = yaml.safe_load(f)
+        return {key.upper(): val for key, val in conf.items()}
+    except (FileNotFoundError, IOError):
+        return {}
+
+
+def sanitize_config(conf):
+    conf.FILES  = os.path.abspath(conf.FILES)
+    conf.THUMBS = os.path.abspath(conf.THUMBS)
+    conf.HILITE = os.path.abspath(conf.HILITE)
+
+
 def main(args=None):
-    global FILES
     from docopt import docopt
     opts = docopt(__doc__, args)
-    FILES = os.path.abspath(opts['--webroot'] or FILES)
+    path = opts['--config'] or os.environ.get('PYCBOX_CONFIG', 'config.yml')
+    cfg.update(load_config(path))
+    cfg.FILES = opts['--webroot'] or cfg.FILES
+    sanitize_config(cfg)
     app.run(opts['--host'], opts['--port'], debug=opts['--debug'])
 
 
 if __name__ == '__main__':
     import sys; sys.exit(main(sys.argv[1:]))
+else:
+    path = os.environ.get('PYCBOX_CONFIG', 'config.yml')
+    cfg.update(load_config(path))
+    sanitize_config(cfg)
