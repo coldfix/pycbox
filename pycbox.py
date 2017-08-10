@@ -138,7 +138,7 @@ def highlight(path):
     if not check_path(path):
         return abort(401)
     if not create_highlight(path):
-        abort(404)
+        return abort(404)
     return send_from_directory(HILITE, path+'.html', as_attachment=False)
 
 
