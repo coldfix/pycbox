@@ -1,3 +1,29 @@
+#! /usr/bin/env python
+"""
+Simple web interface for directory listings and picture gallery.
+
+Usage:
+    ./pycbox.py [-h HOST] [-p PORT] [--debug]
+
+Options:
+    -h HOST, --host HOST        Interface to listen on [default: 127.0.0.1]
+    -p PORT, --port PORT        Port to listen on [default: 5000]
+    --debug                     Turn on debug mode. NEVER use this in production!
+                                It allows the client arbitrary code execution.
+
+Running the pycbox from the command line is not recommended for deployment!
+From http://flask.pocoo.org/docs/latest/deploying/:
+
+    While lightweight and easy to use, Flask’s built-in server is not suitable
+    for production as it doesn’t scale well and by default serves only one
+    request at a time. Some of the options available for properly running
+    Flask in production are documented here.
+
+A more sophisticated server can e.g. be run using twisted:
+
+    twistd --nodaemon --logfile=- web --port=tcp:5000 --wsgi=pycbox.app
+"""
+
 import os
 import subprocess
 from stat import S_ISDIR
@@ -246,5 +272,6 @@ def create_highlight(path):
 
 
 if __name__ == '__main__':
-    debug = os.environ.get('FLASK_DEBUG') == '1'
-    app.run('127.0.0.1', 5000, debug=debug)
+    from docopt import docopt
+    opts = docopt(__doc__)
+    app.run(opts['--host'], opts['--port'], debug=opts['--debug'])
