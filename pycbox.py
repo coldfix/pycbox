@@ -29,7 +29,6 @@ import os
 import subprocess
 from stat import S_ISDIR
 from functools import partial
-from email.utils import formatdate # RFC 2822
 from distutils.spawn import find_executable
 
 import yaml
