@@ -25,6 +25,7 @@ HILITE       = cfg.get('hilite', os.path.join(ROOT, 'hilite'))
 THUMB_WIDTH  = cfg.get('thumb_width', 450)
 THUMB_HEIGHT = cfg.get('thumb_height', 150)
 IMAGE_EXTS   = cfg.get('image_exts', ('.jpg', '.jpeg', '.png', '.bmp', '.gif'))
+FRONTPAGE    = cfg.get('frontpage', 'index')
 
 FILES = os.path.abspath(FILES)
 THUMBS = os.path.abspath(THUMBS)
@@ -39,6 +40,10 @@ def content_url(path, filename, action):
 
 
 @app.route('/')
+def frontpage():
+    return directory_listing(FRONTPAGE, '')
+
+
 @app.route('/index/')
 @app.route('/index/<path:path>/')
 def index(path=''):

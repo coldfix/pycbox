@@ -1,6 +1,9 @@
 # Webroot:
 files: ./files
 
+# Serve 'index' or 'gallery' by default:
+frontpage: 'index'
+
 # thumbnail settings:
 thumb_width: 450
 thumb_height: 150
