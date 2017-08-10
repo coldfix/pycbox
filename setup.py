@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pycbox',
-    version='0.0.0',
+    version='0.0.1',
     description='Web interface for directory listings and picture gallery',
     long_description=None,
     author='Thomas Gläßle',
