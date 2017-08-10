@@ -23,6 +23,9 @@ shipped example config:
 
     cp config.example.yml config.yml
 
+An alternate config file name and path can be specified via the
+``PYCBOX_CONFIG`` environment variable.
+
 Deployment
 ----------
 

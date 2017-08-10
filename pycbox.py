@@ -13,7 +13,7 @@ from PIL import Image
 
 
 try:
-    with open('config.yml') as f:
+    with open(os.environ.get('PYCBOX_CONFIG', 'config.yml')) as f:
         cfg = yaml.safe_load(f)
 except (FileNotFoundError, IOError):
     cfg = {}

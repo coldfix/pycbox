@@ -18,6 +18,7 @@ RUN apk update && \
     mkdir -p            /pycbox /pycbox/hilite /pycbox/thumbs && \
     chown pycbox:pycbox /pycbox /pycbox/hilite /pycbox/thumbs
 
+ENV PYCBOX_CONFIG "config.yml"
 VOLUME /pycbox/files
 EXPOSE 5000
 
