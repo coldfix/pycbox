@@ -1,6 +1,6 @@
 FROM alpine:3.6
 
-COPY . /pycbox
+COPY ./pycbox /pycbox/pycbox
 WORKDIR /pycbox
 
 ARG runtime_deps="dumb-init python3 zlib jpeg yaml highlight"
@@ -10,19 +10,17 @@ RUN apk update && \
     apk add -u $build_deps $runtime_deps && \
     pip3 install incremental && \
     pip3 install twisted && \
-    pip3 install flask pillow && \
-    python3 setup.py develop && \
+    pip3 install docopt flask pillow pyyaml && \
     apk del $build_deps && \
     rm -rf /var/cache/apk/* && \
-    adduser -D -H -h /pycbox -u 9001 pycbox && \
-    mkdir -p            /pycbox /pycbox/hilite /pycbox/thumbs && \
-    chown pycbox:pycbox /pycbox /pycbox/hilite /pycbox/thumbs
+    adduser -D -H -h /pycbox -u 9001 pycbox
 
-ENV PYCBOX_CONFIG "config.yml"
+USER pycbox
+VOLUME /pycbox/cache
 VOLUME /pycbox/files
 EXPOSE 5000
 
-USER pycbox
+ENV PYCBOX_CONFIG "config.yml"
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["twistd", "--nodaemon", "--logfile=-", "web", "--port=tcp:5000", "--wsgi=pycbox.app"]
