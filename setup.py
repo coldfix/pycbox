@@ -8,14 +8,14 @@ def read(filename):
         return f.read().decode('utf-8')
 
 try:
-    long_description = read('README.rst')
+    long_description = read('README.rst') + '\n' + read('CHANGES.rst')
 except IOError:
     long_description = None
 
 
 setup(
     name='pycbox',
-    version='0.0.1',
+    version='0.0.2',
     description='Web interface for directory listings and picture gallery',
     long_description=long_description,
     author='Thomas Gläßle',
