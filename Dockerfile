@@ -3,8 +3,8 @@ FROM alpine:3.6
 COPY . /pycbox
 WORKDIR /pycbox
 
-ARG runtime_deps="dumb-init python3 zlib jpeg highlight"
-ARG build_deps="gcc musl-dev python3-dev zlib-dev jpeg-dev"
+ARG runtime_deps="dumb-init python3 zlib jpeg yaml highlight"
+ARG build_deps="gcc musl-dev python3-dev zlib-dev jpeg-dev yaml-dev ca-certificates"
 
 RUN apk update && \
     apk add -u $build_deps $runtime_deps && \
