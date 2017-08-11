@@ -3,8 +3,14 @@ from setuptools import setup
 import os
 
 
-with open('README.rst', 'rb') as f:
-    long_description = f.read().decode('utf-8')
+def read(filename):
+    with open(filename, 'rb') as f:
+        return f.read().decode('utf-8')
+
+try:
+    long_description = read('README.rst')
+except IOError:
+    long_description = None
 
 
 setup(
