@@ -1,7 +1,6 @@
 # Project specific
 files
-hilite
-thumbs
+cache
 config.yml
 
 # Standard .gitignore:

@@ -11,5 +11,4 @@ image_exts: ['.jpg', '.jpeg', '.png', '.bmp', '.gif']
 
 # Cache location for internal files:
 # (might go away in favor of redis)
-thumbs: ./thumbs
-hilite: ./hilite
+cache: ./cache

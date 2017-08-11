@@ -49,8 +49,9 @@ class Config(dict):
 ROOT = os.path.dirname(__file__)
 cfg = Config({
     'FILES':        os.path.join(ROOT, '..', 'files'),
-    'THUMBS':       os.path.join(ROOT, 'thumbs'),
-    'HILITE':       os.path.join(ROOT, 'hilite'),
+    'CACHE':        os.path.join(ROOT, '..', 'cache'),
+    'THUMBS':       'thumbs',
+    'HILITE':       'hilite',
     'THUMB_WIDTH':  450,
     'THUMB_HEIGHT': 150,
     'IMAGE_EXTS':   ('.jpg', '.jpeg', '.png', '.bmp', '.gif'),
@@ -296,8 +297,9 @@ def load_config(filename):
 
 def sanitize_config(conf):
     conf.FILES  = os.path.abspath(conf.FILES)
-    conf.THUMBS = os.path.abspath(conf.THUMBS)
-    conf.HILITE = os.path.abspath(conf.HILITE)
+    conf.CACHE  = os.path.abspath(conf.CACHE)
+    conf.THUMBS = os.path.join(conf.CACHE, conf.THUMBS)
+    conf.HILITE = os.path.join(conf.CACHE, conf.HILITE)
 
 
 def main(args=None):
