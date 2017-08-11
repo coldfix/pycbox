@@ -1,14 +1,10 @@
 # encoding: utf-8
 from setuptools import setup
+import os
 
 
 with open('README.rst', 'rb') as f:
     long_description = f.read().decode('utf-8')
-
-
-def include(folder):
-    return [os.path.join(folder, file)
-            for file in os.listdir(folder)]
 
 
 setup(
@@ -20,11 +16,10 @@ setup(
     author_email='thomas@coldfix.de',
     url='https://github.com/coldfix/pycbox',
     license='Unlicense',
-    py_modules=['pycbox'],
-    data_files=[
-        ('templates', include('templates')),
-        ('static', include('static')),
-    ],
+    packages=['pycbox'],
+    include_package_data=True,
+    zip_safe=False,
+    scripts=[os.path.join("bin", "pycbox")],
     install_requires=[
         'docopt',
         'flask',

@@ -1,4 +1,5 @@
-graft static
-graft templates
+graft bin
+graft pycbox/static
+graft pycbox/templates
 include README.rst CHANGES.rst
 include config.example.yml

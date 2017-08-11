@@ -48,7 +48,7 @@ class Config(dict):
 
 ROOT = os.path.dirname(__file__)
 cfg = Config({
-    'FILES':        os.path.join(ROOT, 'files'),
+    'FILES':        os.path.join(ROOT, '..', 'files'),
     'THUMBS':       os.path.join(ROOT, 'thumbs'),
     'HILITE':       os.path.join(ROOT, 'hilite'),
     'THUMB_WIDTH':  450,
@@ -58,14 +58,7 @@ cfg = Config({
 })
 
 
-def data_filename(name):
-    if os.path.isdir(os.path.join(ROOT, name)):
-        return os.path.join(ROOT, name)
-
-
-TEMPLATES = os.path.join(ROOT, 'templates')
-STATIC = os.path.join(ROOT, 'static')
-app = Flask(__name__, template_folder=TEMPLATES, static_folder=STATIC)
+app = Flask(__name__)
 
 
 def content_url(path, filename, action):
@@ -310,16 +303,14 @@ def sanitize_config(conf):
 def main(args=None):
     from docopt import docopt
     opts = docopt(__doc__, args)
-    path = opts['--config'] or os.environ.get('PYCBOX_CONFIG', 'config.yml')
-    cfg.update(load_config(path))
-    cfg.FILES = opts['--webroot'] or cfg.FILES
+    if opts['--config']:
+        cfg.update(load_config(opts['--config']))
+    if opts['--webroot']:
+        cfg.FILES = opts['--webroot']
     sanitize_config(cfg)
     app.run(opts['--host'], opts['--port'], debug=opts['--debug'])
 
 
-if __name__ == '__main__':
-    import sys; sys.exit(main(sys.argv[1:]))
-else:
-    path = os.environ.get('PYCBOX_CONFIG', 'config.yml')
-    cfg.update(load_config(path))
-    sanitize_config(cfg)
+path = os.environ.get('PYCBOX_CONFIG', 'config.yml')
+cfg.update(load_config(path))
+sanitize_config(cfg)

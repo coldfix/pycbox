@@ -17,12 +17,12 @@ Usage
 -----
 
 You can quickly install the latest release and serve files from your
-``~/Pictures`` directory as follows (ignore the deprecation warning):
+``~/Pictures`` directory as follows:
 
 .. code-block:: bash
 
-    pip install pycbox --user --egg
-    python -m pycbox -w ~/Pictures
+    pip install pycbox --user
+    pycbox -w ~/Pictures
 
 Alternatively, you can run pycbox without installation from the git checkout.
 Though in this case, you still need to install the dependencies as follows:
@@ -30,7 +30,7 @@ Though in this case, you still need to install the dependencies as follows:
 .. code-block:: bash
 
     pip install -r requirements.txt --user
-    python pycbox.py -w ~/Pictures
+    ./bin/pycbox -w ~/Pictures
 
 However, running the pycbox from the command line like this is not recommended
 for deployment! From the `flask documentation`_:
