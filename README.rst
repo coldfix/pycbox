@@ -16,13 +16,20 @@ This repo is a python rewrite of the picbox_ php app.
 Usage
 -----
 
-You can quickly install the latest release and serve files from your
+You can quickly install the latest release and locally serve files from your
 ``~/Pictures`` directory as follows:
 
 .. code-block:: bash
 
     pip install pycbox --user
     pycbox -w ~/Pictures
+
+In order to allow network access on all network interfaces you also need to
+add the ``--host 0.0.0.0`` option, e.g.:
+
+.. code-block:: bash
+
+    pycbox -w ~/Pictures -h 0.0.0.0
 
 Alternatively, you can run pycbox without installation from the git checkout.
 Though in this case, you still need to install the dependencies as follows:
