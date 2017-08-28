@@ -1,4 +1,9 @@
 #! /usr/bin/env python
+import os
 import sys
-import pycbox
+try:
+    import pycbox
+except ImportError:
+    sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+    import pycbox
 sys.exit(pycbox.main(sys.argv[1:]))

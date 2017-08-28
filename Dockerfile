@@ -21,6 +21,7 @@ VOLUME /pycbox/files
 EXPOSE 5000
 
 ENV PYCBOX_CONFIG "config.yml"
+ENV PYTHONPATH "."
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["twistd", "--nodaemon", "--logfile=-", "web", "--port=tcp:5000", "--wsgi=pycbox.app"]
