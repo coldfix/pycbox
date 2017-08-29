@@ -310,7 +310,7 @@ def main(args=None):
     if opts['--webroot']:
         cfg.FILES = opts['--webroot']
     sanitize_config(cfg)
-    app.run(opts['--host'], opts['--port'], debug=opts['--debug'])
+    app.run(opts['--host'], int(opts['--port']), debug=opts['--debug'])
 
 
 path = os.environ.get('PYCBOX_CONFIG', 'config.yml')
