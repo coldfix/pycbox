@@ -13,7 +13,8 @@ RUN apk update && \
     pip3 install docopt flask pillow pyyaml && \
     apk del $build_deps && \
     rm -rf /var/cache/apk/* && \
-    adduser -D -H -h /pycbox -u 9001 pycbox
+    adduser -D -H -h /pycbox -u 9001 pycbox && \
+    chown pycbox:pycbox /pycbox
 
 USER pycbox
 VOLUME /pycbox/cache
