@@ -5,7 +5,7 @@ services:
     build: .
     restart: always
     volumes:
-      - ./pycbox.py:/pycbox/pycbox.py
+      - ./pycbox:/pycbox/pycbox
       - ./files:/pycbox/files
     ports:
       - "5000:5000"
