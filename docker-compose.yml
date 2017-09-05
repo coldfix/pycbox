@@ -13,3 +13,7 @@ services:
       - PYCBOX_CONFIG=config.yml
     cap_drop:
       - all
+    cap_add:
+      - chown
+      - setgid
+      - setuid
