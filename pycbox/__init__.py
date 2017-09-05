@@ -142,8 +142,9 @@ def highlight(path):
     return send_from_directory(cfg.HILITE, path+'.html', as_attachment=False)
 
 
+@app.route('/upload/', methods=['POST'])
 @app.route('/upload/<path:path>', methods=['POST'])
-def upload(path):
+def upload(path=''):
     if not check_path(path):
         return abort(401)
     path = normpath(path)
