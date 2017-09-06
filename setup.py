@@ -15,7 +15,7 @@ except IOError:
 
 setup(
     name='pycbox',
-    version='0.0.2',
+    version='0.0.3',
     description='Web interface for directory listings and picture gallery',
     long_description=long_description,
     author='Thomas Gläßle',

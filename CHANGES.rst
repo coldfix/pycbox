@@ -1,6 +1,15 @@
 Changes
 -------
 
+0.0.3
+~~~~~
+Date: 06.09.2017
+
+- fix startup error in debug mode, due to port being a string
+- fix startup error in docker container, due to permissions
+- fix error when trying to upload into root folder
+- fix permission problems in docker container
+
 0.0.2
 ~~~~~
 Date: 11.08.2017
