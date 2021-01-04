@@ -36,7 +36,7 @@ Though in this case, you still need to install the dependencies as follows:
 
 .. code-block:: bash
 
-    pip install -r requirements.txt --user
+    pip install --user docopt flask Pillow PyYAML
     ./bin/pycbox -w ~/Pictures
 
 However, running the pycbox from the command line like this is not recommended
