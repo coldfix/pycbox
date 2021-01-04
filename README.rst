@@ -5,11 +5,8 @@ Simple web interface showing a directory-listing or thumbnail-gallery of the
 files or images in the ``files/`` subdirectory. Users can upload files if the
 folder has write-permissions for all.
 
-An example can be seen at pix.coldfix.eu_.
-
 This repo is a python rewrite of the picbox_ php app.
 
-.. _pix.coldfix.eu: https://pix.coldfix.eu
 .. _picbox: https://github.com/coldfix/picbox
 
 
