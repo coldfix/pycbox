@@ -4,7 +4,7 @@ COPY ./pycbox /pycbox/pycbox
 COPY ./docker-entrypoint.sh /pycbox/
 WORKDIR /pycbox
 
-ARG runtime_deps="dumb-init python3 zlib jpeg yaml highlight su-exec"
+ARG runtime_deps="python3 zlib jpeg yaml highlight su-exec"
 ARG build_deps="gcc musl-dev python3-dev zlib-dev jpeg-dev yaml-dev ca-certificates"
 
 RUN apk update && \
@@ -24,5 +24,5 @@ ENV PYCBOX_UID 9001
 ENV PYCBOX_CONFIG "config.yml"
 ENV PYTHONPATH "."
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--", "./docker-entrypoint.sh"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["twistd", "--nodaemon", "--logfile=-", "web", "--port=tcp:5000", "--wsgi=pycbox.app"]

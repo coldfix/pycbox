@@ -1,8 +1,9 @@
 version: "3"
 services:
 
-  picbox:
+  pycbox:
     build: .
+    init: true
     restart: always
     volumes:
       - ./pycbox:/pycbox/pycbox

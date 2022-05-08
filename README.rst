@@ -84,7 +84,7 @@ and run as follows:
 .. code-block:: bash
 
     docker build . -t pycbox
-    docker run --cap-drop=all \
+    docker run --init --cap-drop=all \
         -v `pwd`/files:/pycbox/files \
         -p 5000:5000 \
         --name=pycbox pycbox
